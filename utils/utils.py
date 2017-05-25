@@ -12,7 +12,8 @@ class ProgressBar(object):
     - n_steps (int): number of steps of the progress bar
         - Only used when `fraction` = None
     - fraction (float): fraction of the progress bar (0 <= `fraction` <= 1)
-        - If `fraction` = None, `fraction` will be set equal to float(`value`) / `n_steps`
+        - If `fraction` = None, `fraction` will be set equal to
+          float(`value`) / `n_steps`
 
     Returns
     -------
@@ -26,7 +27,8 @@ class ProgressBar(object):
     >>>
     >>> from IPython.display import display
     >>> from ipywidgets import FloatProgress
-    >>> progress_bar_alt = FloatProgress(min=0, max=n_steps, description='Running...')
+    >>> progress_bar_alt = FloatProgress(min=0, max=n_steps,
+                                         description='Running...')
     >>> display(progress_bar_alt)
     >>>
     >>> progress_bar = ProgressBar(n_steps=n_steps, message='Running')
@@ -40,7 +42,8 @@ class ProgressBar(object):
     >>> progress_bar.show_bar()
     """
 
-    def __init__(self, message='', char='=', nchars=40, value=0, n_steps=100, fraction=None):
+    def __init__(self, message='', char='=', nchars=40, value=0, n_steps=100,
+                 fraction=None):
         self._message = message
         self.char = char
         self.nchars = nchars
@@ -65,7 +68,8 @@ class ProgressBar(object):
 
     @message.setter
     def message(self, message):
-        self._message = max(len(self.message) - len(message), 0)*' ' + message  # try to keep the size of the previous message
+        # try to keep the size of the previous message
+        self._message = max(len(self.message) - len(message), 0)*' ' + message
         self.create_bar(message=self.message)
 
     @value.setter
@@ -82,10 +86,12 @@ class ProgressBar(object):
     def create_bar(self, fraction=None, message=None):
         fraction = fraction or self.fraction
         message = message or self.message
-        self.bar_str = "\r{msg:s} [{bar:s}] {fraction:6.1%}".format(msg=message,
-                                                                    bar=self.char*int(round(self.nchars*fraction)) + \
-                                                                        ' '*(self.nchars-int(round(self.nchars*fraction))),
-                                                                    fraction=fraction)
+        bar = (self.char*int(round(self.nchars*fraction)) +
+               ' '*(self.nchars-int(round(self.nchars*fraction))))
+        self.bar_str = ("\r{msg:s} [{bar:s}] {fraction:6.1%}"
+                        "".format(msg=message,
+                                  bar=bar,
+                                  fraction=fraction))
 
     def update_bar(self, fraction=None):
         if fraction is None:
